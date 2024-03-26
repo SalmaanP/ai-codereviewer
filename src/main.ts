@@ -66,11 +66,12 @@ async function analyzeCode(
     if (file.to === "/dev/null") continue; // Ignore deleted files
     for (const chunk of file.chunks) {
       const prompt = createPrompt(file, chunk, prDetails);
-      core.info("sal")
-      core.info(prompt)
+      core.info("sal");
+      core.info(prompt);
       const aiResponse = await getAIResponse(prompt);
-      core.info(aiResponse)
       if (aiResponse) {
+        const aiResponseString = aiResponse.map(obj => `Line ${obj.lineNumber}: ${obj.reviewComment}`).join('\n');
+        core.info(aiResponseString);
         const newComments = createComment(file, chunk, aiResponse);
         if (newComments) {
           comments.push(...newComments);
